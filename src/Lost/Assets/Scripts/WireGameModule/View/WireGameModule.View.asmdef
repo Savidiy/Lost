@@ -1,0 +1,8 @@
+﻿{
+  "name": "WireGameModule.View",
+  "references": [
+    "GUID:eacad729fd2d4387ba15358e848d9b28",
+    "GUID:6055be8ebefd69e48b49212b09b47b2f",
+    "GUID:209ff43288054a41bb40b85b9dc59101"
+  ]
+}

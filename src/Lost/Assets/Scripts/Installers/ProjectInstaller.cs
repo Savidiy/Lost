@@ -1,6 +1,7 @@
 using Lost;
-using Lost.WireGame.ViewModel;
 using MvvmModule;
+using UiModule;
+using WireGameModule.ViewModel;
 using Zenject;
 
 namespace Installers

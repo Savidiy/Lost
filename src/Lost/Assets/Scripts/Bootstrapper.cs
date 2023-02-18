@@ -1,4 +1,4 @@
-﻿using Lost.WireGame.ViewModel;
+﻿using WireGameModule.ViewModel;
 using Zenject;
 
 namespace Lost

@@ -1,4 +1,4 @@
-﻿namespace Lost.WireGame.Model
+﻿namespace WireGameModule.Model
 {
     public class WireGameData
     {

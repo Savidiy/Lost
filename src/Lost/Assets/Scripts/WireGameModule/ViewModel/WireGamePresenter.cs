@@ -1,9 +1,10 @@
 ﻿using System;
-using Lost.WireGame.View;
 using MvvmModule;
+using UiModule;
 using UnityEngine;
+using WireGameModule.View.WireGameWindow;
 
-namespace Lost.WireGame.ViewModel
+namespace WireGameModule.ViewModel
 {
     public class WireGamePresenter : IDisposable
     {

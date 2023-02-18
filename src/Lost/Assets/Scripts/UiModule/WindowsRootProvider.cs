@@ -1,7 +1,7 @@
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Lost.WireGame.ViewModel
+namespace UiModule
 {
     public class WindowsRootProvider
     {

@@ -1,9 +1,9 @@
 using MvvmModule;
 using UnityEngine;
 
-namespace Lost.WireGame.View
+namespace WireGameModule.View.WireGameWindow
 {
-    internal sealed class WireGameWindowView : View<WireGameWindowHierarchy, IWireGameWindowViewModel>
+    public sealed class WireGameWindowView : View<WireGameWindowHierarchy, IWireGameWindowViewModel>
     {
         public WireGameWindowView(GameObject gameObject, IViewFactory viewFactory) : base(gameObject, viewFactory)
         {

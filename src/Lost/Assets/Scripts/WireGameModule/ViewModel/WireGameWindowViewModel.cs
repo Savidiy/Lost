@@ -1,6 +1,6 @@
-using Lost.WireGame.View;
+using WireGameModule.View.WireGameWindow;
 
-namespace Lost.WireGame.ViewModel
+namespace WireGameModule.ViewModel
 {
     public sealed class WireGameWindowViewModel : IWireGameWindowViewModel
     {

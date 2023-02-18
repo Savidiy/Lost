@@ -1,12 +1,8 @@
 {
-    "name": "Installers",
+    "name": "UiModule",
     "rootNamespace": "",
     "references": [
-        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
-        "GUID:1a4b4ad540f62264f8a614411579198c",
-        "GUID:eacad729fd2d4387ba15358e848d9b28",
-        "GUID:a7a07cae580b4f89b4b423d220b607f0",
-        "GUID:3cbad9492a1e42f0b60bc0f5f8ef9f24"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

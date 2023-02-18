@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Lost.WireGame.ViewModel
+namespace UiModule
 {
     public sealed class WindowRootBehaviour : MonoBehaviour
     {

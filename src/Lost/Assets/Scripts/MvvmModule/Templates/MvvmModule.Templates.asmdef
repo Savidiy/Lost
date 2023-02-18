@@ -1,3 +1,4 @@
 ﻿{
-  "name": "MvvmModule.Templates"
+  "name": "MvvmModule.Templates",
+  "references":[ "GUID:eacad729fd2d4387ba15358e848d9b28", "GUID:209ff43288054a41bb40b85b9dc59101" ]
 }
