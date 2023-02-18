@@ -1,12 +1,10 @@
 {
-    "name": "Game",
-    "rootNamespace": "Lost",
+    "name": "Installers",
+    "rootNamespace": "",
     "references": [
-        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
         "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "MvvmModule",
-        "GUID:209ff43288054a41bb40b85b9dc59101"
+        "GUID:1a4b4ad540f62264f8a614411579198c",
+        "GUID:eacad729fd2d4387ba15358e848d9b28"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

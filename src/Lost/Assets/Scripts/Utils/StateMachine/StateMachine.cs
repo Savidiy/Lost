@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Lost.Utils.StateMachine
+namespace Savidiy.Utils.StateMachine
 {
     public abstract class StateMachine<T> : IDisposable
         where T : class

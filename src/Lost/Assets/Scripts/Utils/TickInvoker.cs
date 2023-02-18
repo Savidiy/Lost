@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-namespace Lost.Utils
+namespace Savidiy.Utils
 {
     public class TickInvoker : ITickable, ILateTickable
     {

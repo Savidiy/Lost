@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace Savidiy.Utils.Editor
 {
     public static class PlayerPrefsReset
     {

@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Lost.Utils
+namespace Savidiy.Utils
 {
     public class Serializer<T> where T : class
     {
