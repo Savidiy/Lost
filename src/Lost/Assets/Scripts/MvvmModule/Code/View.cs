@@ -44,7 +44,8 @@ namespace MvvmModule
                 return;
 
             ReleaseViewModel();
-            ViewModel.Dispose();
+            if (ViewModel is IDisposable disposable)
+                disposable.Dispose();
             ViewModel = null;
         }
 

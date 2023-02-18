@@ -1,0 +1,23 @@
+{
+    "name": "WireGameModule.Setup",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a56fabc9e37943d7bc59501396e64783",
+        "GUID:10baaf54e44941abb94cc7dece7060c4",
+        "GUID:eacad729fd2d4387ba15358e848d9b28",
+        "GUID:209ff43288054a41bb40b85b9dc59101",
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Moq.dll",
+        "Sirenix.OdinInspector.Attributes.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

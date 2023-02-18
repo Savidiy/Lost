@@ -25,7 +25,7 @@ namespace WireGameModule.ViewModel
 
         public void ShowWindow()
         {
-            var viewModel = _viewModelFactory.CreateViewModel<WireGameWindowViewModel>();
+            var viewModel = _viewModelFactory.CreateEmptyViewModel<WireGameWindowViewModel>();
             _wireGameWindowView.Initialize(viewModel);
         }
 
