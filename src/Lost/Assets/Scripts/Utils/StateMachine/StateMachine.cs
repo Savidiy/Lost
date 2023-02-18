@@ -17,46 +17,54 @@ namespace Lost.Utils.StateMachine
             _states.Add(state.GetType(), state);
         }
 
-        public void AddStateWithPayload<TState, TPayload>(TState state)
+        public void AddState<TState, TPayload>(TState state)
             where TState : T, IStateWithPayload<TPayload>
-            where TPayload : class
         {
             _states.Add(state.GetType(), state);
         }
 
-        public void EnterToState<TType>() where TType : IState
+        public void EnterToState<TType>()
+            where TType : T, IState
         {
-            if (_currentState is IStateWithExit stateWithExit)
-                stateWithExit.Exit();
+            ExitFromCurrentState();
 
             Type stateType = typeof(TType);
-            if (!_states.TryGetValue(stateType, out T state))
-                throw new Exception($"There is not state with type '{stateType}'");
-
+            T state = GetState(stateType);
             _currentState = state;
 
-            if (state is IState stateWithoutPayload)
-                stateWithoutPayload.Enter();
+            if (state is not IState stateWithoutPayload)
+                throw new Exception($"There is type '{stateType}' without '{nameof(IState)}' interface");
 
-            throw new Exception($"There is type '{stateType}' without '{nameof(IState)}' interface");
+            stateWithoutPayload.Enter();
         }
 
         public void EnterToState<TType, TPayload>(TPayload payload)
-            where TType : IStateWithPayload<TPayload>
-            where TPayload : class
+            where TType : T, IStateWithPayload<TPayload>
         {
-            if (_currentState is IStateWithExit stateWithExit)
-                stateWithExit.Exit();
+            ExitFromCurrentState();
 
             Type stateType = typeof(TType);
+            T state = GetState(stateType);
+            _currentState = state;
+
+            if (state is not IStateWithPayload<TPayload> stateWithoutPayload)
+                throw new Exception($"There is type '{stateType}' without '{nameof(IStateWithPayload<TPayload>)}' interface");
+
+            stateWithoutPayload.Enter(payload);
+        }
+
+        private T GetState(Type stateType)
+        {
             if (!_states.TryGetValue(stateType, out T state))
                 throw new Exception($"There is not state with type '{stateType}'");
 
-            _currentState = state;
-            if (state is IStateWithPayload<TPayload> stateWithoutPayload)
-                stateWithoutPayload.Enter(payload);
+            return state;
+        }
 
-            throw new Exception($"There is type '{stateType}' without '{nameof(IStateWithPayload<TPayload>)}' interface");
+        private void ExitFromCurrentState()
+        {
+            if (_currentState is IStateWithExit stateWithExit)
+                stateWithExit.Exit();
         }
 
         public void Dispose()
