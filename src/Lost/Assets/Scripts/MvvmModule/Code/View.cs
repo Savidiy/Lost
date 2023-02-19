@@ -86,6 +86,7 @@ namespace MvvmModule
     public abstract class View<THierarchy> : View
         where THierarchy : MonoBehaviour
     {
+        public bool IsActive => Hierarchy.gameObject.activeSelf;
         public THierarchy Hierarchy { get; }
 
         protected View(GameObject gameObject, IViewFactory viewFactory) : base(viewFactory)

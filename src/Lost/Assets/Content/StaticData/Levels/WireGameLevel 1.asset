@@ -26,58 +26,37 @@ MonoBehaviour:
       Data: 0|System.Int32[,], mscorlib
     - Name: 
       Entry: 12
-      Data: 16
+      Data: 9
     - Name: ranks
       Entry: 1
-      Data: 4|4
+      Data: 3|3
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 3
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 4
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 3
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 4
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 4
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 3
     - Name: 
       Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
+      Data: 2
     - Name: 
       Entry: 13
       Data: 
@@ -88,13 +67,12 @@ MonoBehaviour:
   PointsA:
   - {x: 300.25, y: 222.75, z: 0}
   - {x: 276.25, y: 261.75, z: 0}
-  - {x: 300.25, y: 180, z: 0}
-  - {x: 297.25, y: 312.75, z: 0}
-  - {x: 317.5, y: 138, z: 0}
+  - {x: 319.75, y: 162, z: 0}
   PointsB:
   - {x: 486.25, y: 208.5, z: 0}
-  - {x: 509.5, y: 258, z: 0}
+  - {x: 490.75, y: 258.75, z: 0}
   - {x: 486.25, y: 175.5, z: 0}
+  - {x: 460, y: 300.75, z: 0}
   StartConnections:
   - IndexA: 0
     IndexB: 2

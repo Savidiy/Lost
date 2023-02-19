@@ -15,6 +15,16 @@ namespace WireGameModule.Setup
     [ExecuteInEditMode]
     internal sealed class WireGameEditor : MonoBehaviour
     {
+        private const int VALUES_ORDER = 20;
+        private const string RANDOM_VALUES_GROUP = nameof(RANDOM_VALUES_GROUP);
+        private const int RANDOM_VALUES_ORDER = 30;
+        private const int CONNECTION_ORDER = 40;
+        private const int RANDOM_CONNECTION_ORDER = 50;
+        private const int STATISTICS_ORDER = 55;
+        private const string CHANGE_POINTS_GROUP = nameof(CHANGE_POINTS_GROUP);
+        private const int CHANGE_POINTS_ORDER = 60;
+        private const int SAVE_DATA_ORDER = 70;
+        private const int COMPONENTS_ORDER = 100;
         private bool _hasLevel;
         private WireGameLevel _previousWireGameLevel;
         private readonly List<ConnectPointView> _pointsViewA = new();
@@ -25,51 +35,80 @@ namespace WireGameModule.Setup
         [ShowIf(nameof(_hasLevel))]
         public Sprite BackSprite;
 
-        [ShowIf(nameof(_hasLevel))]
+        [ShowIf(nameof(_hasLevel)), PropertyOrder(CONNECTION_ORDER)]
         public List<PointPair> StartConnections = new();
 
-        [ShowIf(nameof(_hasLevel))]
-        [ShowInInspector]
+        [ShowIf(nameof(_hasLevel)), ShowInInspector, PropertyOrder(VALUES_ORDER)]
         [TableMatrix(HorizontalTitle = "A points", VerticalTitle = "B points")]
         public int[,] ConnectsValue = new int[0, 0];
 
-        [FoldoutGroup("Components"), PropertyOrder(3)]
+        [FoldoutGroup("Components"), PropertyOrder(COMPONENTS_ORDER)]
         public Image BackImage;
 
-        [FoldoutGroup("Components"), PropertyOrder(3)]
+        [FoldoutGroup("Components"), PropertyOrder(COMPONENTS_ORDER)]
         public WireConnectPointHierarchy PointPrefab;
 
-        [FoldoutGroup("Components"), PropertyOrder(3)]
+        [FoldoutGroup("Components"), PropertyOrder(COMPONENTS_ORDER)]
         public GameSettings GameSettings;
 
         [Button]
-        [ShowIf(nameof(_hasLevel)), PropertyOrder(2)]
+        [ShowIf(nameof(_hasLevel)), PropertyOrder(SAVE_DATA_ORDER)]
         private void SaveData()
         {
             SaveData(WireGameLevel);
         }
 
-        [Button, HorizontalGroup("Change count"), ShowIf(nameof(_hasLevel)), PropertyOrder(1)]
+        [LabelText("Min"), LabelWidth(40), HorizontalGroup(RANDOM_VALUES_GROUP), ShowIf(nameof(_hasLevel)),
+         PropertyOrder(RANDOM_VALUES_ORDER)]
+        public int MinRandomValue = 1;
+
+        [LabelText("Max"), LabelWidth(40), HorizontalGroup(RANDOM_VALUES_GROUP), ShowIf(nameof(_hasLevel)),
+         PropertyOrder(RANDOM_VALUES_ORDER)]
+        public int MaxRandomValue = 4;
+
+        [Button, HorizontalGroup(RANDOM_VALUES_GROUP), ShowIf(nameof(_hasLevel)), PropertyOrder(RANDOM_VALUES_ORDER)]
+        public void RandomValues()
+        {
+            int lengthA = ConnectsValue.GetLength(0);
+            int lengthB = ConnectsValue.GetLength(1);
+
+            for (int x = 0; x < lengthA; x++)
+            for (int y = 0; y < lengthB; y++)
+                ConnectsValue[x, y] = Random.Range(MinRandomValue, MaxRandomValue + 1);
+            
+            SaveData(WireGameLevel);
+        }
+
+        [Button, HorizontalGroup(CHANGE_POINTS_GROUP), ShowIf(nameof(_hasLevel)), PropertyOrder(CHANGE_POINTS_ORDER)]
         private void AddA() => AddPointToCollection("A", _pointsViewA);
 
-        [Button, HorizontalGroup("Change count"), ShowIf(nameof(_hasLevel)), PropertyOrder(1)]
+        [Button, HorizontalGroup(CHANGE_POINTS_GROUP), ShowIf(nameof(_hasLevel)), PropertyOrder(CHANGE_POINTS_ORDER)]
         private void RemoveA() => RemoveLastPointFromCollection(_pointsViewA);
 
-        [Button, HorizontalGroup("Change count"), ShowIf(nameof(_hasLevel)), PropertyOrder(1)]
+        [Button, HorizontalGroup(CHANGE_POINTS_GROUP), ShowIf(nameof(_hasLevel)), PropertyOrder(CHANGE_POINTS_ORDER)]
         private void AddB() => AddPointToCollection("B", _pointsViewB);
 
-        [Button, HorizontalGroup("Change count"), ShowIf(nameof(_hasLevel)), PropertyOrder(1)]
+        [Button, HorizontalGroup(CHANGE_POINTS_GROUP), ShowIf(nameof(_hasLevel)), PropertyOrder(CHANGE_POINTS_ORDER)]
         private void RemoveB() => RemoveLastPointFromCollection(_pointsViewB);
 
         private void AddPointToCollection(string prefix, List<ConnectPointView> connectPointViews)
+        {
+            ConnectPointView connectPointView = CreateOrActivatePoint(prefix, connectPointViews);
+
+            connectPointView.Hierarchy.transform.position = transform.position;
+
+            SaveData(WireGameLevel);
+            SetupEditor(WireGameLevel);
+        }
+
+        private ConnectPointView CreateOrActivatePoint(string prefix, List<ConnectPointView> connectPointViews)
         {
             foreach (ConnectPointView pointView in connectPointViews)
             {
                 if (pointView.Hierarchy.gameObject.activeSelf == false)
                 {
                     pointView.SetActive(true);
-                    pointView.Hierarchy.transform.position = transform.position;
-                    return;
+                    return pointView;
                 }
             }
 
@@ -77,22 +116,23 @@ namespace WireGameModule.Setup
             IConnectPointViewModel viewModel = new SetupConnectPointViewModel(Vector3.zero, $"{prefix}{connectPointViews.Count}");
             connectPointView.Initialize(viewModel);
             connectPointViews.Add(connectPointView);
-            connectPointView.Hierarchy.transform.position = transform.position;
-            
-            OnValidate();
+            return connectPointView;
         }
 
         private void RemoveLastPointFromCollection(List<ConnectPointView> connectPointViews)
         {
-            int lastIndex = connectPointViews.Count - 1;
-            if (lastIndex < 0)
-                return;
+            for (int i = connectPointViews.Count - 1; i >= 0; i--)
+            {
+                ConnectPointView connectPointView = connectPointViews[i];
+                if (connectPointView.IsActive)
+                {
+                    connectPointView.SetActive(false);
+                    break;
+                }
+            }
 
-            DestroyPoint(connectPointViews[lastIndex]);
-            connectPointViews.RemoveAt(lastIndex);
-            
-            OnValidate();
-            OnValidate();
+            SaveData(WireGameLevel);
+            SetupEditor(WireGameLevel);
         }
 
         private void SaveData(WireGameLevel wireGameLevel)
@@ -100,18 +140,18 @@ namespace WireGameModule.Setup
             wireGameLevel.BackSprite = BackSprite;
 
             wireGameLevel.PointsA = _pointsViewA
-                .Where(a => a.Hierarchy.gameObject.activeSelf)
+                .Where(a => a.IsActive)
                 .Select(a => a.Hierarchy.transform.position)
                 .ToList();
 
             wireGameLevel.PointsB = _pointsViewB
-                .Where(a => a.Hierarchy.gameObject.activeSelf)
+                .Where(a => a.IsActive)
                 .Select(a => a.Hierarchy.transform.position)
                 .ToList();
 
             wireGameLevel.ConnectsValue = ConnectsValue;
             wireGameLevel.StartConnections = StartConnections;
-            
+
             EditorUtility.SetDirty(wireGameLevel);
             AssetDatabase.SaveAssetIfDirty(wireGameLevel);
         }
@@ -119,6 +159,9 @@ namespace WireGameModule.Setup
         private void OnValidate()
         {
             _hasLevel = WireGameLevel != null;
+
+            if(_hasLevel)
+                SetupEditor(WireGameLevel);
 
             if (_hasLevel && _previousWireGameLevel != WireGameLevel)
             {
@@ -153,7 +196,7 @@ namespace WireGameModule.Setup
 
         private void SetupEditor(WireGameLevel wireGameLevel)
         {
-            BackSprite = wireGameLevel.BackSprite;            
+            BackSprite = wireGameLevel.BackSprite;
             ConnectsValue = wireGameLevel.ConnectsValue;
             StartConnections = wireGameLevel.StartConnections;
 
@@ -170,26 +213,34 @@ namespace WireGameModule.Setup
             for (int i = childCount - 1; i >= 0; i--)
             {
                 Transform child = transform.GetChild(i);
-                if (!child.TryGetComponent(typeof(WireConnectPointHierarchy), out var component))
+                if (!child.TryGetComponent(out WireConnectPointHierarchy pointHierarchy))
                     continue;
 
                 var found = false;
                 foreach (ConnectPointView connectPointView in _pointsViewA)
-                    if (connectPointView.Hierarchy == component)
+                    if (connectPointView.Hierarchy == pointHierarchy)
                     {
                         found = true;
                         break;
                     }
 
                 foreach (ConnectPointView connectPointView in _pointsViewB)
-                    if (connectPointView.Hierarchy == component || found)
+                    if (connectPointView.Hierarchy == pointHierarchy || found)
                     {
                         found = true;
                         break;
                     }
 
                 if (!found)
-                    DestroyImmediate(component.gameObject);
+                {
+                    var viewFactoryMock = Mock.Of<IViewFactory>();
+                    var pointView = new ConnectPointView(pointHierarchy.gameObject, viewFactoryMock, GameSettings);
+                    var targetList = _pointsViewA.Count < _pointsViewB.Count ? _pointsViewA : _pointsViewB;
+                    string label = targetList == _pointsViewA ? $"A{_pointsViewA.Count}" : $"B{_pointsViewB.Count}";
+                    IConnectPointViewModel viewModel = new SetupConnectPointViewModel(Vector3.zero, label);
+                    pointView.Initialize(viewModel);
+                    targetList.Add(pointView);
+                }
             }
         }
 
@@ -220,8 +271,8 @@ namespace WireGameModule.Setup
         private ConnectPointView CreateConnectPointView()
         {
             WireConnectPointHierarchy wireConnectPointHierarchy = Instantiate(PointPrefab, transform);
-            var asd = Mock.Of<IViewFactory>();
-            var pointView = new ConnectPointView(wireConnectPointHierarchy.gameObject, asd, GameSettings);
+            var viewFactoryMock = Mock.Of<IViewFactory>();
+            var pointView = new ConnectPointView(wireConnectPointHierarchy.gameObject, viewFactoryMock, GameSettings);
             return pointView;
         }
 
@@ -240,8 +291,9 @@ namespace WireGameModule.Setup
 
         private static void DestroyPoint(ConnectPointView connectPointView)
         {
+            Debug.Log($"Destroy point '{connectPointView.ViewModel.Text}'");
             connectPointView.ClearViewModel();
-            DestroyImmediate(connectPointView.Hierarchy);
+            DestroyImmediate(connectPointView.Hierarchy.gameObject);
         }
     }
 }
