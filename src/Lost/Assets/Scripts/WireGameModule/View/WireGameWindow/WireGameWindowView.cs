@@ -6,8 +6,10 @@ namespace WireGameModule.View.WireGameWindow
 {
     public sealed class WireGameWindowView : View<WireGameWindowHierarchy, IWireGameWindowViewModel>
     {
-        private List<ConnectPointView> _pointsViewA = new();
-        private List<ConnectPointView> _pointsViewB = new();
+        private readonly List<ConnectPointView> _pointsViewA = new();
+        private readonly List<ConnectPointView> _pointsViewB = new();
+        private readonly List<WireView> _wireViews = new();
+
         private const string POINT_PREFAB_NAME = "WireConnectPoint";
         private const string WIRE_PREFAB_NAME = "WireConnectLine";
 
@@ -17,9 +19,22 @@ namespace WireGameModule.View.WireGameWindow
 
         protected override void UpdateViewModel(IWireGameWindowViewModel viewModel)
         {
+            Hierarchy.BackImage.sprite = viewModel.BackSprite;
+
             Bind(viewModel.CurrentSum, OnCurrentSumChange);
             CreatePointViews(_pointsViewA, viewModel.PointsA);
             CreatePointViews(_pointsViewB, viewModel.PointsB);
+            CreateWireViews(viewModel.WireViewModels);
+        }
+
+        private void CreateWireViews(IReadOnlyList<IWireViewModel> wireViewModels)
+        {
+            foreach (IWireViewModel wireViewModel in wireViewModels)
+            {
+                WireView wireView = CreateView<WireView, WireGameWireHierarchy>(WIRE_PREFAB_NAME, Hierarchy.WiresRoot);
+                wireView.Initialize(wireViewModel);
+                _wireViews.Add(wireView);
+            }
         }
 
         private void CreatePointViews(List<ConnectPointView> connectPointViews,
@@ -47,13 +62,20 @@ namespace WireGameModule.View.WireGameWindow
         protected override void ReleaseViewModel()
         {
             base.ReleaseViewModel();
-            foreach (ConnectPointView connectPointView in _pointsViewA) 
+            foreach (ConnectPointView connectPointView in _pointsViewA)
                 connectPointView.Dispose();
+
             _pointsViewA.Clear();
-            foreach (ConnectPointView connectPointView in _pointsViewB) 
-                connectPointView.Dispose();
-            _pointsViewB.Clear();
             
+            foreach (ConnectPointView connectPointView in _pointsViewB)
+                connectPointView.Dispose();
+
+            _pointsViewB.Clear();
+
+            foreach (WireView wireView in _wireViews) 
+                wireView.Dispose();
+            
+            _wireViews.Clear();
         }
     }
 }

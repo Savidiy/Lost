@@ -240,20 +240,26 @@ namespace WireGameModule.Setup
             UpdatePointsPosition(wireGameLevel.PointsA, _pointsViewA, "A");
             UpdatePointsPosition(wireGameLevel.PointsB, _pointsViewB, "B");
             ConnectsValue = UpdateConnectionValues(wireGameLevel);
-            
+
             RemoveUselessStartConnections();
             int maxSum = _wireGameStatistics.UpdateStatistics(Statistics, StartConnections, ConnectsValue);
         }
-        
+
         private int[,] UpdateConnectionValues(WireGameLevel wireGameLevel)
         {
             int countA = wireGameLevel.PointsA.Count;
             int countB = wireGameLevel.PointsB.Count;
             var ints = new int [countA, countB];
 
-            for (int i = 0; i < countA; i++)
-            for (int j = 0; j < countB; j++)
-                ints[i, j] = wireGameLevel.ConnectsValue[i, j];
+            int[,] connects = wireGameLevel.ConnectsValue;
+            int lengthA = connects.GetLength(0);
+            int lengthB = connects.GetLength(1);
+
+            for (int i = 0; i < countA && i < lengthA; i++)
+            for (int j = 0; j < countB && j < lengthB; j++)
+            {
+                ints[i, j] = connects[i, j];
+            }
 
             return ints;
         }

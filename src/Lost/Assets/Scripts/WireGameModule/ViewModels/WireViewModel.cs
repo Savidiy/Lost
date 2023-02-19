@@ -1,18 +1,26 @@
-﻿using UnityEngine;
+﻿using MvvmModule;
+using UniRx;
+using UnityEngine;
 using WireGameModule.View;
 
 namespace WireGameModule.ViewModels
 {
-    public sealed class WireViewModel : IWireViewModel
+    public sealed class WireViewModel : EmptyViewModel, IWireViewModel
     {
-        // private readonly IViewModelFactory _viewModelFactory;
-        // var viewModel = _viewModelFactory.CreateViewModel<WireViewModel>();
+        private readonly ReactiveProperty<Vector3> _startPoint = new();
+        private readonly ReactiveProperty<Vector3> _endPoint = new();
 
-        public Vector3 StartPoint { get; }
-        public Vector3 EndPoint { get; }
+        public IReadOnlyReactiveProperty<Vector3> StartPoint => _startPoint;
+        public IReadOnlyReactiveProperty<Vector3> EndPoint => _endPoint;
 
-        public void Dispose()
+        public WireViewModel(IViewModelFactory viewModelFactory) : base(viewModelFactory)
         {
+        }
+
+        public void UpdatePoints(Vector3 start, Vector3 end)
+        {
+            _startPoint.Value = start;
+            _endPoint.Value = end;
         }
     }
 }

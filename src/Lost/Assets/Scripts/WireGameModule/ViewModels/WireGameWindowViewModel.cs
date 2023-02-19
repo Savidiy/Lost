@@ -15,13 +15,14 @@ namespace WireGameModule.ViewModels
         private readonly WireGameLevelData _wireGameLevelData;
         private readonly List<ConnectPointViewModel> _pointsA;
         private readonly List<ConnectPointViewModel> _pointsB;
+        private readonly List<WireViewModel> _wireViewModels;
         private EPointGroup _selectedGroup = EPointGroup.None;
         private int _selectedIndex;
 
         public Sprite BackSprite { get; }
         public IReadOnlyList<IConnectPointViewModel> PointsA => _pointsA;
         public IReadOnlyList<IConnectPointViewModel> PointsB => _pointsB;
-        public IReadOnlyList<PointPair> Connections { get; }
+        public IReadOnlyList<IWireViewModel> WireViewModels => _wireViewModels;
         public int TargetSum { get; }
         public IReadOnlyReactiveProperty<int> CurrentSum { get; }
 
@@ -31,7 +32,6 @@ namespace WireGameModule.ViewModels
             _wireGameLevelData = wireGameLevelHolder.GetLevel(levelNumber);
 
             BackSprite = _wireGameLevelData.BackSprite;
-            Connections = _wireGameLevelData.Connections;
             TargetSum = _wireGameLevelData.TargetSum;
             CurrentSum = _wireGameLevelData.CurrentSum;
 
@@ -42,6 +42,36 @@ namespace WireGameModule.ViewModels
             List<Vector3> pointsB = _wireGameLevelData.PointsB;
             _pointsB = new List<ConnectPointViewModel>(pointsB.Count);
             CreatePointViewModels(pointsB, EPointGroup.B);
+
+            List<PointPair> connections = _wireGameLevelData.Connections;
+            _wireViewModels = new(connections.Count);
+            CreateWireViewModels(connections);
+        }
+
+        private void UpdateWirePositions()
+        {
+            List<Vector3> pointsA = _wireGameLevelData.PointsA;
+            List<Vector3> pointsB = _wireGameLevelData.PointsB;
+            List<PointPair> connections = _wireGameLevelData.Connections;
+
+            for (var index = 0; index < connections.Count; index++)
+            {
+                PointPair pointPair = connections[index];
+                Vector3 start = pointsA[pointPair.IndexA];
+                Vector3 end = pointsB[pointPair.IndexB];
+                _wireViewModels[index].UpdatePoints(start, end);
+            }
+        }
+
+        private void CreateWireViewModels(List<PointPair> connections)
+        {
+            foreach (PointPair _ in connections)
+            {
+                var wireViewModel = CreateEmptyViewModel<WireViewModel>();
+                _wireViewModels.Add(wireViewModel);
+            }
+
+            UpdateWirePositions();
         }
 
         private void CreatePointViewModels(List<Vector3> points, EPointGroup pointGroup)
@@ -49,7 +79,7 @@ namespace WireGameModule.ViewModels
             for (var index = 0; index < points.Count; index++)
             {
                 Vector3 vector3 = points[index];
-                var startCondition = CalcPointCondition(Connections, index, pointGroup);
+                var startCondition = CalcPointCondition(index, pointGroup);
                 var args = new ConnectPointViewModelArgs(pointGroup, index, vector3, startCondition);
 
                 ConnectPointViewModel connectPointViewModel =
@@ -96,6 +126,7 @@ namespace WireGameModule.ViewModels
             }
 
             UpdatePointsCondition();
+            UpdateWirePositions();
         }
 
         private void UpdatePointsCondition()
@@ -103,20 +134,22 @@ namespace WireGameModule.ViewModels
             for (var index = 0; index < _pointsA.Count; index++)
             {
                 ConnectPointViewModel connectPointViewModel = _pointsA[index];
-                EPointCondition pointCondition = CalcPointCondition(Connections, index, EPointGroup.A);
+                EPointCondition pointCondition = CalcPointCondition(index, EPointGroup.A);
                 connectPointViewModel.SetPointCondition(pointCondition);
             }
 
             for (var index = 0; index < _pointsB.Count; index++)
             {
                 ConnectPointViewModel connectPointViewModel = _pointsB[index];
-                EPointCondition pointCondition = CalcPointCondition(Connections, index, EPointGroup.B);
+                EPointCondition pointCondition = CalcPointCondition(index, EPointGroup.B);
                 connectPointViewModel.SetPointCondition(pointCondition);
             }
         }
 
-        private EPointCondition CalcPointCondition(IReadOnlyList<PointPair> connections, int index, EPointGroup pointGroup)
+        private EPointCondition CalcPointCondition(int index, EPointGroup pointGroup)
         {
+            var connections = _wireGameLevelData.Connections;
+
             if (_selectedGroup == pointGroup)
             {
                 return index == _selectedIndex
