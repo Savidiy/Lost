@@ -227,34 +227,30 @@ namespace WireGameModule.Setup
             BackImage.sprite = BackSprite;
         }
 
-        private void UpdateConnectionValues()
+        private int[,] CloneArray(int[,] fromArray)
         {
-            int countA = WireGameLevel.PointsA.Count;
-            int countB = WireGameLevel.PointsB.Count;
+            int countA = fromArray.GetLength(0);
+            int countB = fromArray.GetLength(1);
             var ints = new int [countA, countB];
 
-            int oldLengthA = ConnectsValue.GetLength(0);
-            int oldLengthB = ConnectsValue.GetLength(1);
+            for (int i = 0; i < countA ; i++)
+            for (int j = 0; j < countB ; j++)
+                ints[i, j] = fromArray[i, j];
 
-            for (int i = 0; i < countA && i < oldLengthA; i++)
-            for (int j = 0; j < countB && j < oldLengthB; j++)
-                ints[i, j] = ConnectsValue[i, j];
-
-            ConnectsValue = ints;
+            return ints;
         }
 
         private void SetupEditor(WireGameLevel wireGameLevel)
         {
             BackSprite = wireGameLevel.BackSprite;
-            ConnectsValue = wireGameLevel.ConnectsValue;
-            StartConnections = wireGameLevel.StartConnections;
+            StartConnections = wireGameLevel.StartConnections.ToList();
+            ConnectsValue = CloneArray(wireGameLevel.ConnectsValue);
             TargetSum = wireGameLevel.TargetSum;
 
             RemoveOldPointHierarchy();
 
             UpdatePointsPosition(wireGameLevel.PointsA, _pointsViewA, "A");
             UpdatePointsPosition(wireGameLevel.PointsB, _pointsViewB, "B");
-            UpdateConnectionValues();
 
             RemoveUselessStartConnections();
             int maxSum = _wireGameStatistics.UpdateStatistics(Statistics, StartConnections, ConnectsValue);
