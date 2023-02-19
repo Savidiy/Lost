@@ -32,31 +32,31 @@ MonoBehaviour:
       Data: 3|3
     - Name: 
       Entry: 3
-      Data: 2
-    - Name: 
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 3
       Data: 1
     - Name: 
       Entry: 3
       Data: 4
     - Name: 
       Entry: 3
-      Data: 2
+      Data: 4
     - Name: 
       Entry: 3
       Data: 4
     - Name: 
       Entry: 3
-      Data: 2
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 5
+    - Name: 
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 3
+      Data: 3
     - Name: 
       Entry: 3
       Data: 2
-    - Name: 
-      Entry: 3
-      Data: 4
     - Name: 
       Entry: 13
       Data: 
@@ -75,4 +75,11 @@ MonoBehaviour:
   - {x: 460.75, y: 200.25, z: 0}
   - {x: 460.75, y: 162.75, z: 0}
   - {x: 436.75, y: 132.75, z: 0}
-  StartConnections: []
+  StartConnections:
+  - IndexA: 4
+    IndexB: 2
+  - IndexA: 3
+    IndexB: 0
+  - IndexA: 0
+    IndexB: 1
+  TargetSum: 12

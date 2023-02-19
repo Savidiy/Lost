@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Moq;
@@ -9,12 +10,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using WireGameModule.Model;
 using WireGameModule.View;
+using Random = UnityEngine.Random;
 
 namespace WireGameModule.Setup
 {
     [ExecuteInEditMode]
     internal sealed class WireGameEditor : MonoBehaviour
     {
+        private const int START_ORDER = 10;
         private const int VALUES_ORDER = 20;
         private const string RANDOM_VALUES_GROUP = nameof(RANDOM_VALUES_GROUP);
         private const int RANDOM_VALUES_ORDER = 30;
@@ -22,13 +25,14 @@ namespace WireGameModule.Setup
         private const int RANDOM_CONNECTION_ORDER = 50;
         private const int STATISTICS_ORDER = 55;
         private const string CHANGE_POINTS_GROUP = nameof(CHANGE_POINTS_GROUP);
-        private const int CHANGE_POINTS_ORDER = 60;
-        private const int SAVE_DATA_ORDER = 70;
+        private const int CHANGE_POINTS_ORDER = 51;
+        private const int SAVE_DATA_ORDER = 52;
         private const int COMPONENTS_ORDER = 100;
         private bool _hasLevel;
         private WireGameLevel _previousWireGameLevel;
         private readonly List<ConnectPointView> _pointsViewA = new();
         private readonly List<ConnectPointView> _pointsViewB = new();
+        private readonly WireGameStatistics _wireGameStatistics = new();
 
         public WireGameLevel WireGameLevel;
 
@@ -37,6 +41,9 @@ namespace WireGameModule.Setup
 
         [ShowIf(nameof(_hasLevel)), PropertyOrder(CONNECTION_ORDER)]
         public List<PointPair> StartConnections = new();
+
+        [ShowIf(nameof(_hasLevel)), PropertyOrder(CONNECTION_ORDER)]
+        public int TargetSum;
 
         [ShowIf(nameof(_hasLevel)), ShowInInspector, PropertyOrder(VALUES_ORDER)]
         [TableMatrix(HorizontalTitle = "A points", VerticalTitle = "B points")]
@@ -53,10 +60,11 @@ namespace WireGameModule.Setup
 
         [Button]
         [ShowIf(nameof(_hasLevel)), PropertyOrder(SAVE_DATA_ORDER)]
-        private void SaveData()
-        {
-            SaveData(WireGameLevel);
-        }
+        private void SaveData() => SaveData(WireGameLevel);
+
+        [Button]
+        [ShowIf(nameof(_hasLevel)), PropertyOrder(START_ORDER)]
+        private void RefreshData() => SetupEditor(WireGameLevel);
 
         [LabelText("Min"), LabelWidth(40), HorizontalGroup(RANDOM_VALUES_GROUP), ShowIf(nameof(_hasLevel)),
          PropertyOrder(RANDOM_VALUES_ORDER)]
@@ -75,9 +83,41 @@ namespace WireGameModule.Setup
             for (int x = 0; x < lengthA; x++)
             for (int y = 0; y < lengthB; y++)
                 ConnectsValue[x, y] = Random.Range(MinRandomValue, MaxRandomValue + 1);
-            
+
             SaveData(WireGameLevel);
+            SetupEditor(WireGameLevel);
         }
+
+        [Button, ShowIf(nameof(_hasLevel)), PropertyOrder(RANDOM_CONNECTION_ORDER)]
+        private void RandomConnections()
+        {
+            var indexesA = new List<int>();
+            int pointsACount = WireGameLevel.PointsA.Count;
+            for (int i = 0; i < pointsACount; i++)
+                indexesA.Add(i);
+
+            var indexesB = new List<int>();
+            int pointsBCount = WireGameLevel.PointsB.Count;
+            for (int i = 0; i < pointsBCount; i++)
+                indexesB.Add(i);
+
+            int connectionCount = Math.Min(StartConnections.Count, Math.Min(pointsACount, pointsBCount));
+            StartConnections.Clear();
+            for (int i = 0; i < connectionCount; i++)
+            {
+                int a = Random.Range(0, indexesA.Count);
+                int b = Random.Range(0, indexesB.Count);
+                StartConnections.Add(new PointPair(indexesA[a], indexesB[b]));
+                indexesA.RemoveAt(a);
+                indexesB.RemoveAt(b);
+            }
+
+            SaveData(WireGameLevel);
+            SetupEditor(WireGameLevel);
+        }
+
+        [ReadOnly, PropertyOrder(STATISTICS_ORDER)]
+        public List<string> Statistics = new();
 
         [Button, HorizontalGroup(CHANGE_POINTS_GROUP), ShowIf(nameof(_hasLevel)), PropertyOrder(CHANGE_POINTS_ORDER)]
         private void AddA() => AddPointToCollection("A", _pointsViewA);
@@ -151,6 +191,7 @@ namespace WireGameModule.Setup
 
             wireGameLevel.ConnectsValue = ConnectsValue;
             wireGameLevel.StartConnections = StartConnections;
+            wireGameLevel.TargetSum = TargetSum;
 
             EditorUtility.SetDirty(wireGameLevel);
             AssetDatabase.SaveAssetIfDirty(wireGameLevel);
@@ -160,8 +201,11 @@ namespace WireGameModule.Setup
         {
             _hasLevel = WireGameLevel != null;
 
-            if(_hasLevel)
+            if (_hasLevel)
+            {
+                WireGameLevel.TargetSum = TargetSum;
                 SetupEditor(WireGameLevel);
+            }
 
             if (_hasLevel && _previousWireGameLevel != WireGameLevel)
             {
@@ -199,12 +243,25 @@ namespace WireGameModule.Setup
             BackSprite = wireGameLevel.BackSprite;
             ConnectsValue = wireGameLevel.ConnectsValue;
             StartConnections = wireGameLevel.StartConnections;
+            TargetSum = wireGameLevel.TargetSum;
 
             RemoveOldPointHierarchy();
 
             UpdatePointsPosition(wireGameLevel.PointsA, _pointsViewA, "A");
             UpdatePointsPosition(wireGameLevel.PointsB, _pointsViewB, "B");
             UpdateConnectionValues();
+
+            RemoveUselessStartConnections();
+            int maxSum = _wireGameStatistics.UpdateStatistics(Statistics, StartConnections, ConnectsValue);
+        }
+
+        private void RemoveUselessStartConnections()
+        {
+            int maxCount = Math.Min(ConnectsValue.GetLength(0), ConnectsValue.GetLength(1));
+
+            int uselessCount = StartConnections.Count - maxCount;
+            if (uselessCount > 0)
+                StartConnections.RemoveRange(maxCount - 1, uselessCount);
         }
 
         private void RemoveOldPointHierarchy()
