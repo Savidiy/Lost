@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Savidiy.Utils;
+using WireGameModule.Infrastructure;
 using WireGameModule.Model;
 
 namespace WireGameModule.Setup

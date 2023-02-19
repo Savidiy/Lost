@@ -1,5 +1,7 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using WireGameModule.Infrastructure;
 
 namespace SettingsModule
 {
@@ -15,5 +17,7 @@ namespace SettingsModule
         [Title("Wires")]
         public float WireY;
         public float WireZ;
+        public List<WireGameLevel> WireLevels;
+        public int CurrentLevel;
     }
 }

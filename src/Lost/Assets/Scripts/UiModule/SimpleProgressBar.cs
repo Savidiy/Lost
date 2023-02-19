@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace UiModule
 {
-    internal sealed class ProgressBar : MonoBehaviour
+    public sealed class SimpleProgressBar : MonoBehaviour
     {
         [SerializeField] private Image _fillImage;
 

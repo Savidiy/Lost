@@ -2,14 +2,16 @@
 using MvvmModule;
 using SettingsModule;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace WireGameModule.View
 {
-    public sealed class ConnectPointView : View<WireConnectPointHierarchy, IConnectPointViewModel>
+    public sealed class ConnectPointView : View<WireGameConnectPointHierarchy, IConnectPointViewModel>
     {
         private readonly GameSettings _gameSettings;
 
-        public ConnectPointView(GameObject gameObject, IViewFactory viewFactory, GameSettings gameSettings) : base(gameObject, viewFactory)
+        public ConnectPointView(GameObject gameObject, IViewFactory viewFactory, GameSettings gameSettings) : base(gameObject,
+            viewFactory)
         {
             _gameSettings = gameSettings;
         }
@@ -44,8 +46,16 @@ namespace WireGameModule.View
                 EPointCondition.Available => _gameSettings.ConnectPointAvailableColor,
                 _ => throw new ArgumentOutOfRangeException(nameof(pointCondition), pointCondition, null)
             };
-            
+
             Hierarchy.Image.color = color;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            ClearViewModel();
+            if (Hierarchy != null)
+                Object.Destroy(Hierarchy.gameObject);
         }
     }
 }

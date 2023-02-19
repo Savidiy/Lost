@@ -1,10 +1,11 @@
 ﻿using System;
 using MvvmModule;
+using SettingsModule;
 using UiModule;
 using UnityEngine;
 using WireGameModule.View.WireGameWindow;
 
-namespace WireGameModule.ViewModel
+namespace WireGameModule.ViewModels
 {
     public class WireGamePresenter : IDisposable
     {
@@ -12,20 +13,23 @@ namespace WireGameModule.ViewModel
         private readonly WindowsRootProvider _windowsRootProvider;
         private readonly IViewFactory _viewFactory;
         private readonly IViewModelFactory _viewModelFactory;
+        private readonly GameSettings _gameSettings;
         private WireGameWindowView _wireGameWindowView;
 
         public WireGamePresenter(WindowsRootProvider windowsRootProvider, IViewFactory viewFactory,
-            IViewModelFactory viewModelFactory)
+            IViewModelFactory viewModelFactory, GameSettings gameSettings)
         {
             _viewFactory = viewFactory;
             _viewModelFactory = viewModelFactory;
+            _gameSettings = gameSettings;
             _windowsRootProvider = windowsRootProvider;
             CreateView();
         }
 
         public void ShowWindow()
         {
-            var viewModel = _viewModelFactory.CreateEmptyViewModel<WireGameWindowViewModel>();
+            var levelIndex = _gameSettings.CurrentLevel;
+            var viewModel = _viewModelFactory.CreateViewModel<WireGameWindowViewModel, int>(levelIndex);
             _wireGameWindowView.Initialize(viewModel);
         }
 

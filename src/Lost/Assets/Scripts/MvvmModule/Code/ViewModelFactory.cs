@@ -14,8 +14,8 @@ namespace MvvmModule
         public TViewModel CreateViewModel<TViewModel, TModel>(TModel model) 
             where TViewModel : ViewModel<TModel>
         {
-            _diContainer.Bind<TModel>().FromInstance(model);
-            _diContainer.Bind<TViewModel>().AsSingle();
+            _diContainer.Bind<TModel>().FromInstance(model).AsTransient();
+            _diContainer.Bind<TViewModel>().AsTransient();
             var viewModel = _diContainer.Resolve<TViewModel>();
             _diContainer.Unbind<TViewModel>();
             _diContainer.Unbind<TModel>();
@@ -26,7 +26,7 @@ namespace MvvmModule
         public TViewModel CreateEmptyViewModel<TViewModel>() 
             where TViewModel : EmptyViewModel
         {
-            _diContainer.Bind<TViewModel>().AsSingle();
+            _diContainer.Bind<TViewModel>().AsTransient();
             var viewModel = _diContainer.Resolve<TViewModel>();
             _diContainer.Unbind<TViewModel>();
 

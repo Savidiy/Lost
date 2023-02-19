@@ -2,7 +2,8 @@ using Lost;
 using MvvmModule;
 using SettingsModule;
 using UiModule;
-using WireGameModule.ViewModel;
+using WireGameModule.Model;
+using WireGameModule.ViewModels;
 using Zenject;
 
 namespace Installers
@@ -21,6 +22,7 @@ namespace Installers
 
             Container.Bind<WireGamePresenter>().AsSingle();
             Container.Bind<WindowsRootProvider>().AsSingle();
+            Container.Bind<WireGameLevelHolder>().AsSingle();
             
             Container.Bind<GameSettings>().FromInstance(GameSettings);
         }

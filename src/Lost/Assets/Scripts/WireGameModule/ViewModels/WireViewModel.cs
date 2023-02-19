@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using WireGameModule.View;
 
-namespace WireGameModule.View
+namespace WireGameModule.ViewModels
 {
     public sealed class WireViewModel : IWireViewModel
     {

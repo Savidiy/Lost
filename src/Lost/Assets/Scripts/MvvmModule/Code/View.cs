@@ -134,5 +134,16 @@ namespace MvvmModule
 
             return view;
         }
+
+        protected TView CreateView<TView, THierarchy>(string prefabName, Transform parent)
+            where TView : View<THierarchy> where THierarchy : MonoBehaviour
+        {
+            TView view = _viewFactory.CreateView<TView, THierarchy>(prefabName, parent);
+
+            _childViews.Add(view);
+            AddDisposable(view);
+
+            return view;
+        }
     }
 }

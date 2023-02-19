@@ -1,17 +1,22 @@
 {
-    "name": "WireGameModule.Model",
-    "rootNamespace": "",
-    "references": [],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": true,
-    "precompiledReferences": [
-        "Sirenix.OdinInspector.Attributes.dll",
-        "Sirenix.Serialization.dll"
-    ],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "WireGameModule.Model",
+  "rootNamespace": "",
+  "references": [
+    "GUID:209ff43288054a41bb40b85b9dc59101",
+    "GUID:b782676caf054cfc87f07bdb59a9f599",
+    "GUID:10baaf54e44941abb94cc7dece7060c4",
+    "GUID:560b04d1a97f54a4e82edc0cbbb69285"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Sirenix.OdinInspector.Attributes.dll",
+    "Sirenix.Serialization.dll"
+  ],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

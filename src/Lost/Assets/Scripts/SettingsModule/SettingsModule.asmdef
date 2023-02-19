@@ -1,3 +1,16 @@
-﻿{
-  "name": "SettingsModule"
+{
+    "name": "SettingsModule",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b782676caf054cfc87f07bdb59a9f599"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

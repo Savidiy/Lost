@@ -26,10 +26,34 @@ MonoBehaviour:
       Data: 0|System.Int32[,], mscorlib
     - Name: 
       Entry: 12
-      Data: 9
+      Data: 12
     - Name: ranks
       Entry: 1
-      Data: 3|3
+      Data: 4|3
+    - Name: 
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 3
+      Data: 5
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 5
     - Name: 
       Entry: 3
       Data: 2
@@ -38,25 +62,10 @@ MonoBehaviour:
       Data: 5
     - Name: 
       Entry: 3
-      Data: 3
-    - Name: 
-      Entry: 3
-      Data: 3
-    - Name: 
-      Entry: 3
-      Data: 3
-    - Name: 
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 3
       Data: 4
     - Name: 
       Entry: 3
-      Data: 3
-    - Name: 
-      Entry: 3
-      Data: 4
+      Data: 2
     - Name: 
       Entry: 13
       Data: 
@@ -65,19 +74,19 @@ MonoBehaviour:
       Data: 
   BackSprite: {fileID: 21300000, guid: b1edb7045da09a843905212c0487dd7d, type: 3}
   PointsA:
-  - {x: 307, y: 210, z: 0}
-  - {x: 307, y: 270.75, z: 0}
-  - {x: 319.75, y: 162, z: 0}
-  - {x: 318.25, y: 309.75, z: 0}
+  - {x: 302.5, y: 200.2, z: 0}
+  - {x: 277.5, y: 273.8, z: 0}
+  - {x: 330.3, y: 112.9, z: 0}
+  - {x: 303.9, y: 340.7, z: 0}
   PointsB:
-  - {x: 486.25, y: 208.5, z: 0}
-  - {x: 490.75, y: 258.75, z: 0}
-  - {x: 486.25, y: 175.5, z: 0}
+  - {x: 453, y: 219.1, z: 0}
+  - {x: 460.5, y: 338.1, z: 0}
+  - {x: 453, y: 145.3, z: 0}
   StartConnections:
-  - IndexA: 2
-    IndexB: 1
   - IndexA: 1
     IndexB: 0
-  - IndexA: 3
+  - IndexA: 2
     IndexB: 2
-  TargetSum: 12
+  - IndexA: 0
+    IndexB: 1
+  TargetSum: 15

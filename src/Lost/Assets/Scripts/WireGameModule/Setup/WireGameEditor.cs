@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using MvvmModule;
+using Savidiy.Utils;
 using SettingsModule;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using WireGameModule.Infrastructure;
 using WireGameModule.Model;
 using WireGameModule.View;
 using Random = UnityEngine.Random;
@@ -55,7 +57,7 @@ namespace WireGameModule.Setup
         public Image BackImage;
 
         [FoldoutGroup("Components"), PropertyOrder(COMPONENTS_ORDER)]
-        public WireConnectPointHierarchy PointPrefab;
+        public WireGameConnectPointHierarchy PointPrefab;
 
         [FoldoutGroup("Components"), PropertyOrder(COMPONENTS_ORDER)]
         public GameSettings GameSettings;
@@ -118,7 +120,7 @@ namespace WireGameModule.Setup
             SetupEditor(WireGameLevel);
         }
 
-        [ReadOnly, PropertyOrder(STATISTICS_ORDER)]
+        [ReadOnly, ShowIf(nameof(_hasLevel)), PropertyOrder(STATISTICS_ORDER)]
         public List<string> Statistics = new();
 
         [Button, HorizontalGroup(CHANGE_POINTS_GROUP), ShowIf(nameof(_hasLevel)), PropertyOrder(CHANGE_POINTS_ORDER)]
@@ -191,8 +193,8 @@ namespace WireGameModule.Setup
                 .Select(a => a.Hierarchy.transform.position)
                 .ToList();
 
-            wireGameLevel.ConnectsValue = ConnectsValue;
-            wireGameLevel.StartConnections = StartConnections;
+            wireGameLevel.ConnectsValue = ConnectsValue.CloneArray();
+            wireGameLevel.StartConnections = StartConnections.ToList();
             wireGameLevel.TargetSum = TargetSum;
 
             EditorUtility.SetDirty(wireGameLevel);
@@ -227,33 +229,33 @@ namespace WireGameModule.Setup
             BackImage.sprite = BackSprite;
         }
 
-        private int[,] CloneArray(int[,] fromArray)
-        {
-            int countA = fromArray.GetLength(0);
-            int countB = fromArray.GetLength(1);
-            var ints = new int [countA, countB];
-
-            for (int i = 0; i < countA ; i++)
-            for (int j = 0; j < countB ; j++)
-                ints[i, j] = fromArray[i, j];
-
-            return ints;
-        }
-
         private void SetupEditor(WireGameLevel wireGameLevel)
         {
             BackSprite = wireGameLevel.BackSprite;
             StartConnections = wireGameLevel.StartConnections.ToList();
-            ConnectsValue = CloneArray(wireGameLevel.ConnectsValue);
             TargetSum = wireGameLevel.TargetSum;
 
             RemoveOldPointHierarchy();
 
             UpdatePointsPosition(wireGameLevel.PointsA, _pointsViewA, "A");
             UpdatePointsPosition(wireGameLevel.PointsB, _pointsViewB, "B");
-
+            ConnectsValue = UpdateConnectionValues(wireGameLevel);
+            
             RemoveUselessStartConnections();
             int maxSum = _wireGameStatistics.UpdateStatistics(Statistics, StartConnections, ConnectsValue);
+        }
+        
+        private int[,] UpdateConnectionValues(WireGameLevel wireGameLevel)
+        {
+            int countA = wireGameLevel.PointsA.Count;
+            int countB = wireGameLevel.PointsB.Count;
+            var ints = new int [countA, countB];
+
+            for (int i = 0; i < countA; i++)
+            for (int j = 0; j < countB; j++)
+                ints[i, j] = wireGameLevel.ConnectsValue[i, j];
+
+            return ints;
         }
 
         private void RemoveUselessStartConnections()
@@ -271,7 +273,7 @@ namespace WireGameModule.Setup
             for (int i = childCount - 1; i >= 0; i--)
             {
                 Transform child = transform.GetChild(i);
-                if (!child.TryGetComponent(out WireConnectPointHierarchy pointHierarchy))
+                if (!child.TryGetComponent(out WireGameConnectPointHierarchy pointHierarchy))
                     continue;
 
                 var found = false;
@@ -328,9 +330,9 @@ namespace WireGameModule.Setup
 
         private ConnectPointView CreateConnectPointView()
         {
-            WireConnectPointHierarchy wireConnectPointHierarchy = Instantiate(PointPrefab, transform);
+            WireGameConnectPointHierarchy wireGameConnectPointHierarchy = Instantiate(PointPrefab, transform);
             var viewFactoryMock = Mock.Of<IViewFactory>();
-            var pointView = new ConnectPointView(wireConnectPointHierarchy.gameObject, viewFactoryMock, GameSettings);
+            var pointView = new ConnectPointView(wireGameConnectPointHierarchy.gameObject, viewFactoryMock, GameSettings);
             return pointView;
         }
 
