@@ -4,12 +4,14 @@ using Moq;
 using MvvmModule;
 using SettingsModule;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using WireGameModule.View;
 
 namespace WireGameModule.Setup
 {
+    [ExecuteInEditMode]
     internal sealed class WireGameEditor : MonoBehaviour
     {
         private bool _hasLevel;
@@ -57,6 +59,7 @@ namespace WireGameModule.Setup
                 if (pointView.Hierarchy.gameObject.activeSelf == false)
                 {
                     pointView.SetActive(true);
+                    pointView.Hierarchy.transform.position = transform.position;
                     return;
                 }
             }
@@ -65,6 +68,7 @@ namespace WireGameModule.Setup
             IConnectPointViewModel viewModel = new SetupConnectPointViewModel(Vector3.zero, $"{prefix}{connectPointViews.Count}");
             connectPointView.Initialize(viewModel);
             connectPointViews.Add(connectPointView);
+            connectPointView.Hierarchy.transform.position = transform.position;
         }
 
         private static void RemoveLastPointFromCollection(List<ConnectPointView> connectPointViews)
@@ -90,6 +94,9 @@ namespace WireGameModule.Setup
                 .Where(a => a.Hierarchy.gameObject.activeSelf)
                 .Select(a => a.Hierarchy.transform.position)
                 .ToList();
+            
+            EditorUtility.SetDirty(wireGameLevel);
+            AssetDatabase.SaveAssetIfDirty(wireGameLevel);
         }
 
         private void OnValidate()
