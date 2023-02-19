@@ -26,10 +26,10 @@ MonoBehaviour:
       Data: 0|System.Int32[,], mscorlib
     - Name: 
       Entry: 12
-      Data: 12
+      Data: 9
     - Name: ranks
       Entry: 1
-      Data: 4|3
+      Data: 3|3
     - Name: 
       Entry: 3
       Data: 1
@@ -58,15 +58,6 @@ MonoBehaviour:
       Entry: 3
       Data: 3
     - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
       Entry: 13
       Data: 
     - Name: 
@@ -83,7 +74,7 @@ MonoBehaviour:
   - {x: 472.75, y: 199.5, z: 0}
   StartConnections:
   - IndexA: 0
-    IndexB: 2
-  - IndexA: 2
     IndexB: 0
+  - IndexA: 2
+    IndexB: 1
   TargetSum: 10

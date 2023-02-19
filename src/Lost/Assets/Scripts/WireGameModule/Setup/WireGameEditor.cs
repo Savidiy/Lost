@@ -45,6 +45,8 @@ namespace WireGameModule.Setup
         [ShowIf(nameof(_hasLevel)), PropertyOrder(CONNECTION_ORDER)]
         public int TargetSum;
 
+        private int _previousTargetSum;
+
         [ShowIf(nameof(_hasLevel)), ShowInInspector, PropertyOrder(VALUES_ORDER)]
         [TableMatrix(HorizontalTitle = "A points", VerticalTitle = "B points")]
         public int[,] ConnectsValue = new int[0, 0];
@@ -203,20 +205,23 @@ namespace WireGameModule.Setup
 
             if (_hasLevel)
             {
-                WireGameLevel.TargetSum = TargetSum;
-                SetupEditor(WireGameLevel);
-            }
-
-            if (_hasLevel && _previousWireGameLevel != WireGameLevel)
-            {
-                if (_previousWireGameLevel != null)
+                bool isLevelChanged = _previousWireGameLevel != WireGameLevel;
+                if (isLevelChanged)
                 {
-                    SetupEditor(_previousWireGameLevel);
-                    SaveData(_previousWireGameLevel);
-                }
+                    if (_previousWireGameLevel != null)
+                    {
+                        SetupEditor(_previousWireGameLevel);
+                        SaveData(_previousWireGameLevel);
+                    }
 
-                _previousWireGameLevel = WireGameLevel;
-                SetupEditor(WireGameLevel);
+                    _previousWireGameLevel = WireGameLevel;
+                    SetupEditor(WireGameLevel);
+                }
+                else
+                {
+                    WireGameLevel.TargetSum = TargetSum;
+                    SetupEditor(WireGameLevel);
+                }
             }
 
             BackImage.sprite = BackSprite;
