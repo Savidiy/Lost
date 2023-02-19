@@ -12,6 +12,78 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7577be24c404209a047169f0b73a79b, type: 3}
   m_Name: WireGameLevel 1
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: ConnectsValue
+      Entry: 7
+      Data: 0|System.Int32[,], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 16
+    - Name: ranks
+      Entry: 1
+      Data: 4|4
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   BackSprite: {fileID: 21300000, guid: b1edb7045da09a843905212c0487dd7d, type: 3}
   PointsA:
   - {x: 300.25, y: 222.75, z: 0}
@@ -23,4 +95,10 @@ MonoBehaviour:
   - {x: 486.25, y: 208.5, z: 0}
   - {x: 509.5, y: 258, z: 0}
   - {x: 486.25, y: 175.5, z: 0}
-  StartConnections: []
+  StartConnections:
+  - IndexA: 0
+    IndexB: 2
+  - IndexA: 1
+    IndexB: 0
+  - IndexA: 2
+    IndexB: 1

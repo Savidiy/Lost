@@ -6,7 +6,8 @@
         "GUID:10baaf54e44941abb94cc7dece7060c4",
         "GUID:eacad729fd2d4387ba15358e848d9b28",
         "GUID:209ff43288054a41bb40b85b9dc59101",
-        "GUID:560b04d1a97f54a4e82edc0cbbb69285"
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
+        "GUID:0e0638f3eaaf41ee9c0687ce70154a52"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -14,7 +15,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "Moq.dll",
-        "Sirenix.OdinInspector.Attributes.dll"
+        "Sirenix.OdinInspector.Attributes.dll",
+        "Sirenix.Serialization.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

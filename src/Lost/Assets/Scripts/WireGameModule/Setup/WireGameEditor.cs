@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using WireGameModule.Model;
 using WireGameModule.View;
 
 namespace WireGameModule.Setup
@@ -23,6 +24,14 @@ namespace WireGameModule.Setup
 
         [ShowIf(nameof(_hasLevel))]
         public Sprite BackSprite;
+
+        [ShowIf(nameof(_hasLevel))]
+        public List<PointPair> StartConnections = new();
+
+        [ShowIf(nameof(_hasLevel))]
+        [ShowInInspector]
+        [TableMatrix(HorizontalTitle = "A points", VerticalTitle = "B points")]
+        public int[,] ConnectsValue = new int[0, 0];
 
         [FoldoutGroup("Components"), PropertyOrder(3)]
         public Image BackImage;
@@ -69,9 +78,11 @@ namespace WireGameModule.Setup
             connectPointView.Initialize(viewModel);
             connectPointViews.Add(connectPointView);
             connectPointView.Hierarchy.transform.position = transform.position;
+            
+            OnValidate();
         }
 
-        private static void RemoveLastPointFromCollection(List<ConnectPointView> connectPointViews)
+        private void RemoveLastPointFromCollection(List<ConnectPointView> connectPointViews)
         {
             int lastIndex = connectPointViews.Count - 1;
             if (lastIndex < 0)
@@ -79,6 +90,9 @@ namespace WireGameModule.Setup
 
             DestroyPoint(connectPointViews[lastIndex]);
             connectPointViews.RemoveAt(lastIndex);
+            
+            OnValidate();
+            OnValidate();
         }
 
         private void SaveData(WireGameLevel wireGameLevel)
@@ -94,6 +108,9 @@ namespace WireGameModule.Setup
                 .Where(a => a.Hierarchy.gameObject.activeSelf)
                 .Select(a => a.Hierarchy.transform.position)
                 .ToList();
+
+            wireGameLevel.ConnectsValue = ConnectsValue;
+            wireGameLevel.StartConnections = StartConnections;
             
             EditorUtility.SetDirty(wireGameLevel);
             AssetDatabase.SaveAssetIfDirty(wireGameLevel);
@@ -106,23 +123,45 @@ namespace WireGameModule.Setup
             if (_hasLevel && _previousWireGameLevel != WireGameLevel)
             {
                 if (_previousWireGameLevel != null)
+                {
+                    SetupEditor(_previousWireGameLevel);
                     SaveData(_previousWireGameLevel);
+                }
 
                 _previousWireGameLevel = WireGameLevel;
-                SetupEditor();
+                SetupEditor(WireGameLevel);
             }
 
             BackImage.sprite = BackSprite;
         }
 
-        private void SetupEditor()
+        private void UpdateConnectionValues()
         {
-            BackSprite = WireGameLevel.BackSprite;
+            int countA = WireGameLevel.PointsA.Count;
+            int countB = WireGameLevel.PointsB.Count;
+            var ints = new int [countA, countB];
+
+            int oldLengthA = ConnectsValue.GetLength(0);
+            int oldLengthB = ConnectsValue.GetLength(1);
+
+            for (int i = 0; i < countA && i < oldLengthA; i++)
+            for (int j = 0; j < countB && j < oldLengthB; j++)
+                ints[i, j] = ConnectsValue[i, j];
+
+            ConnectsValue = ints;
+        }
+
+        private void SetupEditor(WireGameLevel wireGameLevel)
+        {
+            BackSprite = wireGameLevel.BackSprite;            
+            ConnectsValue = wireGameLevel.ConnectsValue;
+            StartConnections = wireGameLevel.StartConnections;
 
             RemoveOldPointHierarchy();
 
-            UpdatePointsPosition(WireGameLevel.PointsA, _pointsViewA, "A");
-            UpdatePointsPosition(WireGameLevel.PointsB, _pointsViewB, "B");
+            UpdatePointsPosition(wireGameLevel.PointsA, _pointsViewA, "A");
+            UpdatePointsPosition(wireGameLevel.PointsB, _pointsViewB, "B");
+            UpdateConnectionValues();
         }
 
         private void RemoveOldPointHierarchy()
