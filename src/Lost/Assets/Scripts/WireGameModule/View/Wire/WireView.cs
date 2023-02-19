@@ -15,6 +15,7 @@ namespace WireGameModule.View
 
         protected override void UpdateViewModel(IWireViewModel viewModel)
         {
+            Hierarchy.Image.color = viewModel.Color;
             BindSilently(viewModel.StartPoint, OnPointChange);
             Bind(viewModel.EndPoint, OnPointChange);
         }

@@ -8,5 +8,6 @@ namespace WireGameModule.View
     {
         IReadOnlyReactiveProperty<Vector3> StartPoint { get; }
         IReadOnlyReactiveProperty<Vector3> EndPoint { get; }
+        Color Color { get; }
     }
 }

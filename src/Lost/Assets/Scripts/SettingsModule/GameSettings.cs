@@ -19,5 +19,6 @@ namespace SettingsModule
         public float WireZ;
         public List<WireGameLevel> WireLevels;
         public int CurrentLevel;
+        public List<Color> WireColors;
     }
 }

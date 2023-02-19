@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MvvmModule;
+using SettingsModule;
 using UniRx;
 using UnityEngine;
 using WireGameModule.Infrastructure;
@@ -12,6 +13,7 @@ namespace WireGameModule.ViewModels
 {
     public sealed class WireGameWindowViewModel : ViewModel<int>, IWireGameWindowViewModel
     {
+        private readonly GameSettings _gameSettings;
         private readonly WireGameLevelData _wireGameLevelData;
         private readonly List<ConnectPointViewModel> _pointsA;
         private readonly List<ConnectPointViewModel> _pointsB;
@@ -27,8 +29,9 @@ namespace WireGameModule.ViewModels
         public IReadOnlyReactiveProperty<int> CurrentSum { get; }
 
         public WireGameWindowViewModel(int levelNumber, IViewModelFactory viewModelFactory,
-            WireGameLevelHolder wireGameLevelHolder) : base(levelNumber, viewModelFactory)
+            WireGameLevelHolder wireGameLevelHolder, GameSettings gameSettings) : base(levelNumber, viewModelFactory)
         {
+            _gameSettings = gameSettings;
             _wireGameLevelData = wireGameLevelHolder.GetLevel(levelNumber);
 
             BackSprite = _wireGameLevelData.BackSprite;
@@ -65,9 +68,11 @@ namespace WireGameModule.ViewModels
 
         private void CreateWireViewModels(List<PointPair> connections)
         {
-            foreach (PointPair _ in connections)
+            List<Color> wireColors = _gameSettings.WireColors;
+
+            for (var index = 0; index < connections.Count; index++)
             {
-                var wireViewModel = CreateEmptyViewModel<WireViewModel>();
+                var wireViewModel = CreateViewModel<WireViewModel, Color>(wireColors[index]);
                 _wireViewModels.Add(wireViewModel);
             }
 
